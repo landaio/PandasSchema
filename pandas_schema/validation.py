@@ -229,9 +229,10 @@ class IsDtypeValidation(_BaseValidation):
     def get_errors(self, series: pd.Series, column: 'column.Column' = None):
         if not np.issubdtype(series.dtype, self.dtype):
             return [ValidationWarning(
-                'The column {} has a dtype of {} which is not a subclass of the required type {}'.format(
+                message='The column {} has a dtype of {} which is not a subclass of the required type {}'.format(
                     column.name if column else '', series.dtype, self.dtype
-                )
+                ),
+                column=column
             )]
         else:
             return []
