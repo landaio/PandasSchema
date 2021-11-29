@@ -232,7 +232,7 @@ class IsDtypeValidation(_BaseValidation):
             # emit error per row so we can set the `row``, `value`` properties on ValidationWarning
             for idx, item in enumerate(series):
                 message = f"The column {column.name if column else 'N/A'} is of type \
-                {series.dtype} which is not a subclass of the required type: {self.dtype}"
+                    {series.dtype} which is not a subclass of the required type: {self.dtype}"
                 errors.append(ValidationWarning(
                     message=message,
                     value=item,
