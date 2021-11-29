@@ -226,16 +226,21 @@ class IsDtypeValidation(_BaseValidation):
         self.dtype = dtype
         super().__init__(**kwargs)
 
-    def get_errors(self, series: pd.Series, column: 'column.Column' = None):
+    def get_errors(self, series: pd.Series, column: 'column.Column'=None):
+        errors = []
         if not np.issubdtype(series.dtype, self.dtype):
-            return [ValidationWarning(
-                message='The column {} has a dtype of {} which is not a subclass of the required type {}'.format(
-                    column.name if column else '', series.dtype, self.dtype
-                ),
-                column=column
-            )]
-        else:
-            return []
+            # emit error per row so we can set the `row``, `value`` properties on ValidationWarning
+            for idx, item in enumerate(series):
+                message = f"The column {column.name if column else 'N/A'} is of type \
+                {series.dtype} which is not a subclass of the required type: {self.dtype}"
+                errors.append(ValidationWarning(
+                    message=message,
+                    value=item,
+                    row=idx,
+                    column=series.name
+                ))
+        
+        return errors
 
 
 class CanCallValidation(_SeriesValidation):
